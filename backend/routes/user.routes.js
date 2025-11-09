@@ -2,7 +2,7 @@ import { Router } from "express";
 import { register,login, uploadProfilePicture, updateUserProfile, getUserAndProfile,updateProfileData,getAllUserProfile,downloadProfile,sendConnectionRequest,
     getMyConnectionsRequests,
     whatAreMyConnections,
-    acceptConnectionRequest,} from "../controllers/user.controller.js";
+    acceptConnectionRequest,getUserProfileAndUserBasedOnUername,} from "../controllers/user.controller.js";
 // import { uploadProfilePicture } from "../controllers/user.controller.js";
 import multer from "multer";
 const router = Router();
@@ -31,4 +31,7 @@ router.route("/user/send_connection_request").post(sendConnectionRequest);
 router.route("/user/getConnectionRequests").get(getMyConnectionsRequests);
 router.route("/user/user_connection_request").get(whatAreMyConnections);
 router.route("/user/accept_connection_request").post(acceptConnectionRequest);
+router
+    .route("/user/get_profile_based_on_username")
+    .get(getUserProfileAndUserBasedOnUername);
 export default router;

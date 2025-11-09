@@ -6,7 +6,7 @@ import PDFDocument from "pdfkit";
 import fs from "fs";
 import ConnectionRequest from "../models/connections.model.js";
 import Post from "../models/posts.model.js";
-
+import Comment from "../models/comments.model.js";
 const convertUserDataTOPDF = async (userData) => {
     const doc = new PDFDocument();
     const outputPath = crypto.randomBytes(32).toString("hex") + ".pdf";
@@ -192,7 +192,7 @@ export const sendConnectionRequest = async (req, res) => {
     }
 };
 export const getMyConnectionsRequests = async (req, res) => {
-    const { token } = req.body;
+    const { token } = req.query;
     try {
         const user = await User.findOne({ token: token });
         if (!user) return res.status(404).json({ message: "User not found" });
@@ -254,10 +254,26 @@ export const commentPost = async (req, res) => {
         const comment = new Comment({
             userId: user._id,
             postId: post_id,
-            comment: commentBody,
+            body: commentBody,
         });
         await comment.save();
         return res.status(200).json({ message: "comment Added" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+export const getUserProfileAndUserBasedOnUername = async (req, res) => {
+    const { username } = req.query;
+    try {
+        const user = await User.findOne({ username });
+        if (!user) return res.status(404).json({ message: "User not found" });
+        const userProfile = await Profile.findOne({
+            userId: user._id,
+        }).populate("userId", "name email username profilePicture");
+        if (!userProfile) {
+            return res.status(404).json({ message: "Profile not found" });
+        }
+        return res.json({ profile: userProfile });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
