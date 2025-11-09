@@ -1,12 +1,22 @@
 import { Router } from "express";
-import { register,login, uploadProfilePicture, updateUserProfile, getUserAndProfile,updateProfileData,getAllUserProfile,downloadProfile,sendConnectionRequest,
+import {
+    register,
+    login,
+    uploadProfilePicture,
+    updateUserProfile,
+    getUserAndProfile,
+    updateProfileData,
+    getAllUserProfile,
+    downloadProfile,
+    sendConnectionRequest,
     getMyConnectionsRequests,
     whatAreMyConnections,
-    acceptConnectionRequest,getUserProfileAndUserBasedOnUername,} from "../controllers/user.controller.js";
-// import { uploadProfilePicture } from "../controllers/user.controller.js";
+    acceptConnectionRequest,
+    getUserProfileAndUserBasedOnUername,
+} from "../controllers/user.controller.js";
+
 import multer from "multer";
 const router = Router();
-
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

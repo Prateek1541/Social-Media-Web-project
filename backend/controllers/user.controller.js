@@ -7,12 +7,13 @@ import fs from "fs";
 import ConnectionRequest from "../models/connections.model.js";
 import Post from "../models/posts.model.js";
 import Comment from "../models/comments.model.js";
+
 const convertUserDataTOPDF = async (userData) => {
     const doc = new PDFDocument();
     const outputPath = crypto.randomBytes(32).toString("hex") + ".pdf";
     const stream = fs.createWriteStream("uploads/" + outputPath);
     doc.pipe(stream);
-    doc.image( `uploads/${userData.userId.profilePicture}`, {
+    doc.image(`uploads/${userData.userId.profilePicture}`, {
         align: "center",
         width: 100,
     });
@@ -31,6 +32,7 @@ const convertUserDataTOPDF = async (userData) => {
     doc.end();
     return outputPath;
 };
+
 export const register = async (req, res) => {
     try {
         const { name, email, password, username } = req.body;
@@ -56,6 +58,7 @@ export const register = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -71,62 +74,61 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Invalid Credentials !" });
         const token = crypto.randomBytes(32).toString("hex");
         await User.updateOne({ _id: user._id }, { token });
-        return res.json({ token : token});
+        return res.json({ token: token });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 };
-export const uploadProfilePicture = async (req,res) =>{
-    const {token} = req.body;
-    try{
-        const user = await User.findOne({token:token});
+export const uploadProfilePicture = async (req, res) => {
+    const { token } = req.body;
+    try {
+        const user = await User.findOne({ token: token });
         if (!user)
             return res.status(404).json({ message: "User does not exist" });
         user.profilePicture = req.file.filename;
         await user.save();
-        return res.json({ message: "Profile Picture Update"});
-    }catch(error){
-        return res.status(500).json({ message: error.message });
-    } 
-};
-export const updateUserProfile = async (req,res) =>{
-    
-    try{
-        const {token,...newUserData} = req.body;
-        const user = await User.findOne({token:token});
-        if (!user)
-            return res.status(404).json({ message: "User does not exist" });
-        const { username,email} = newUserData;
-        const existingUser = await User.findOne({ $or: [{username},{email}]}); 
-        if(existingUser){
-            if(existingUser || String(existingUser._id)!== String(user._id)){
-                 return res.status(404).json({ message: "User already exist" });
-            }
-        }
-        // user.profilePicture = req.file.filename;
-        Object.assign(user,newUserData);
-
-        await user.save();
-        return res.json({message: "User updated"});
-        // return res.json({ message: "Profile Picture Update"});
-    }catch(error){
+        return res.json({ message: "Profile Picture Updated" });
+    } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 };
-export const getUserAndProfile = async(req, res) => {
-    try{
-        const {token} = req.query;
-        const user = await User.findOne({token:token});
-        if (!user)
-            return res.status(404).json({ message: "User does not exist" });
-        const profile  = await Profile.findOne({ userId:user._id,}).populate('userId','name email username profilePicture')
+export const updateUserProfile = async (req, res) => {
+    try {
+        const { token, ...newUserData } = req.body;
+        const user = await User.findOne({ token: token });
+        if (!user) return res.status(404).json({ message: "User not found" });
+        const { username, email } = newUserData;
+
+        const existingUser = await User.findOne({
+            $or: [{ username }, { email }],
+        });
+        if (existingUser) {
+            if (existingUser || String(existingUser._id) !== String(user._id)) {
+                return res.status(400).json({ message: "User already exists" });
+            }
+        }
+        Object.assign(user, newUserData);
+        await user.save();
+        return res.json({ message: "User Updated" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+export const getUserAndProfile = async (req, res) => {
+    try {
+        const { token } = req.query;
+        const user = await User.findOne({ token: token });
+        if (!user) return res.status(404).json({ message: "User not found" });
+        const profile = await Profile.findOne({
+            userId: user._id,
+        }).populate("userId", "name email username profilePicture");
         if (!profile) {
             return res.status(404).json({ message: "Profile not found" });
         }
         return res.json({ profile });
-    }catch(error){
+    } catch (error) {
         return res.status(500).json({ message: error.message });
-    } 
+    }
 };
 export const updateProfileData = async (req, res) => {
     try {
@@ -239,7 +241,6 @@ export const acceptConnectionRequest = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
-
 export const commentPost = async (req, res) => {
     const { token, post_id, commentBody } = req.body;
     try {

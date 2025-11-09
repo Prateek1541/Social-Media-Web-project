@@ -1,5 +1,4 @@
 import { Router } from "express";
-// import { activeCheck } from "../controllers/posts.controller.js";
 import {
     activeCheck,
     createPost,
@@ -12,6 +11,7 @@ import {
 import multer from "multer";
 import { commentPost } from "../controllers/user.controller.js";
 const router = Router();
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "uploads/");
