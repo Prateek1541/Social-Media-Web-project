@@ -40,7 +40,7 @@ const authSlice = createSlice({
         setTokenIsNotThere: (state) => {
             state.isTokenThere = false;
         },
-    },  
+    },
     extraReducers: (builders) => {
         builders
             .addCase(loginUser.pending, (state) => {
@@ -87,7 +87,7 @@ const authSlice = createSlice({
                 state.isError = false;
                 state.all_profiles_fetched = true;
                 state.all_users = action.payload.profiles;
-                })
+            })
             .addCase(getConnectionsRequest.fulfilled, (state, action) => {
                 state.connections = action.payload;
             })

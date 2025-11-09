@@ -15,20 +15,22 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "./index.module.css";
 import { BASE_URL } from "@/config";
 import { resetPostId } from "@/config/redux/reducer/postReducer";
+
 export default function Dashboard() {
     const router = useRouter();
+
     const dispatch = useDispatch();
     const authState = useSelector((state) => state.auth);
     const postState = useSelector((state) => state.postReducer);
-   
+
     useEffect(() => {
         if (authState.isTokenThere) {
             dispatch(getAllPosts());
             dispatch(getAboutUser({ token: localStorage.getItem("token") }));
-            }
+        }
         if (!authState.all_profiles_fetched) {
             dispatch(getAllUsers());
-            }
+        }
     }, [authState.isTokenThere]);
     const [postContent, setPostContent] = useState("");
     const [fileContent, setFileContent] = useState();
@@ -43,8 +45,8 @@ export default function Dashboard() {
             <UserLayout>
                 {/* {authState.profileFetched && (
                 <div>Hey {authState.user.userId.name}</div>
-                )} */}
-            <DashboardLayout>
+            )} */}
+                <DashboardLayout>
                     <div className={styles.scrollComponent}>
                         <div className={styles.wrapper}>
                             <div className={styles.createPostContainer}>
@@ -201,7 +203,8 @@ export default function Dashboard() {
                                                         <img
                                                             src={`${BASE_URL}/${post.media}`}
                                                         />
-                                                    </div><div
+                                                    </div>
+                                                    <div
                                                         className={
                                                             styles.optionsContainer
                                                         }
@@ -319,7 +322,8 @@ export default function Dashboard() {
                                 })}
                             </div>
                         </div>
-                    </div>{postState.postId !== "" && (
+                    </div>
+                    {postState.postId !== "" && (
                         <div
                             onClick={() => {
                                 dispatch(resetPostId());
@@ -338,13 +342,13 @@ export default function Dashboard() {
                                 {postState.comments.length !== 0 && (
                                     <div>
                                         {postState.comments.map(
-                                            (comment, index) => {
+                                            (postComment, index) => {
                                                 return (
                                                     <div
                                                         className={
                                                             styles.singleComment
                                                         }
-                                                        key={commentText._id}
+                                                        key={postComment._id}
                                                     >
                                                         <div
                                                             className={
@@ -352,7 +356,7 @@ export default function Dashboard() {
                                                             }
                                                         >
                                                             <img
-                                                                src={`${BASE_URL}/${comment.userId.profilePicture}`}
+                                                                src={`${BASE_URL}/${postComment.userId.profilePicture}`}
                                                                 alt=""
                                                             />
                                                             <div>
@@ -365,7 +369,7 @@ export default function Dashboard() {
                                                                     }}
                                                                 >
                                                                     {
-                                                                        comment
+                                                                        postComment
                                                                             .userId
                                                                             .name
                                                                     }
@@ -374,14 +378,16 @@ export default function Dashboard() {
                                                                     {" "}
                                                                     @
                                                                     {
-                                                                        comment
+                                                                        postComment
                                                                             .userId
                                                                             .username
                                                                     }
                                                                 </p>
                                                             </div>
                                                         </div>
-                                                        <p>{comment.body}</p>
+                                                        <p>
+                                                            {postComment.body}
+                                                        </p>
                                                     </div>
                                                 );
                                             }

@@ -86,7 +86,7 @@ export default function DashboardLayout({ children }) {
                             <p>My Connections</p>
                         </div>
                     </div>
-                     <div className={styles.homeContainer__feedContainer}>
+                    <div className={styles.homeContainer__feedContainer}>
                         {children}
                     </div>
                     <div className={styles.homeContainer__extraContainer}>

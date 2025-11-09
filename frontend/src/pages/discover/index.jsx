@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "./index.module.css";
 import { BASE_URL } from "@/config";
 import { useRouter } from "next/router";
+
 export default function Discoverpage() {
     const authState = useSelector((state) => state.auth);
     const dispatch = useDispatch();

@@ -6,7 +6,7 @@ import { reset } from "@/config/redux/reducer/authReducer";
 
 function NavbarComponent() {
     const router = useRouter();
-     const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const authState = useSelector((state) => state.auth);
     return (
         <div className={styles.container}>
@@ -28,6 +28,9 @@ function NavbarComponent() {
                                     style={{
                                         fontWeight: "bold",
                                         cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                        router.push("/profile");
                                     }}
                                 >
                                     Profile

@@ -1,10 +1,12 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter} from "next/font/google";
+import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import UserLayout from "@/layout/UserLayout";
-const inter = Inter({subsets:["latin"]});
+
+const inter = Inter({ subsets: ["latin"] });
+
 export default function Home() {
     const router = useRouter();
     return (
@@ -26,7 +28,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div className={styles.mainContainer__right}>
-                        <img src="images/logo.png" alt="" />
+                        <img src="images/homemain_connection.jpg" alt="" />
                     </div>
                 </div>
             </div>

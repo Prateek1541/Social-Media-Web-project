@@ -9,11 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllPosts } from "@/config/redux/action/postAction";
 import {
     getConnectionsRequest,
+    getMyConnectionRequests,
     sendConnectionRequest,
 } from "@/config/redux/action/authAction";
 
 export default function ViewProfilePage({ userProfile }) {
-     const router = useRouter();
+    const router = useRouter();
     const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
     const authState = useSelector((state) => state.auth);
@@ -27,6 +28,9 @@ export default function ViewProfilePage({ userProfile }) {
         await dispatch(getAllPosts());
         await dispatch(
             getConnectionsRequest({ token: localStorage.getItem("token") })
+        );
+        await dispatch(
+            getMyConnectionRequests({ token: localStorage.getItem("token") })
         );
     };
 
@@ -53,11 +57,27 @@ export default function ViewProfilePage({ userProfile }) {
                 setIsConnectionNull(false);
             }
         }
-    }, [authState.connections]);
+
+        if (
+            authState.connectionRequest.some(
+                (user) => user.userId._id === userProfile.userId._id
+            )
+        ) {
+            setIsCurrentUserInConnection(true);
+            if (
+                authState.connectionRequest.find(
+                    (user) => user.userId._id === userProfile.userId._id
+                ).status_accepted === true
+            ) {
+                setIsConnectionNull(false);
+            }
+        }
+    }, [authState.connections, authState.connectionRequest]);
 
     useEffect(() => {
         getUsersPost();
     }, []);
+
     const searchParams = useSearchParams();
     useEffect(() => {
         console.log("From View: View Profile");
@@ -89,7 +109,7 @@ export default function ViewProfilePage({ userProfile }) {
                                         @{userProfile.userId.username}
                                     </p>
                                 </div>
-                                  <div
+                                <div
                                     style={{
                                         display: "flex",
                                         alignItems: "center",
@@ -136,7 +156,7 @@ export default function ViewProfilePage({ userProfile }) {
                                         }}
                                         style={{ cursor: "pointer" }}
                                     >
-                                                                           <svg
+                                        <svg
                                             style={{ width: "1.2em" }}
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
@@ -152,7 +172,7 @@ export default function ViewProfilePage({ userProfile }) {
                                             />
                                         </svg>
                                     </div>
-                                </div>     
+                                </div>
                                 <div>
                                     <p>{userProfile.bio}</p>
                                 </div>
@@ -191,10 +211,9 @@ export default function ViewProfilePage({ userProfile }) {
                                     );
                                 })}
                             </div>
-                             
                         </div>
                     </div>
-                     <div className={styles.workHistory}>
+                    <div className={styles.workHistory}>
                         <h4>Work History</h4>
                         <div className={styles.workHistoryContainer}>
                             {userProfile.pastWork.map((work, index) => {
